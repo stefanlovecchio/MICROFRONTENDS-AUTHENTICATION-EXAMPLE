@@ -2,7 +2,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import './App.css';
-
+import Logout from './logout';
 const UserApp = lazy(() => import('userApp/App'));
 const ProductApp = lazy(() => import('productApp/App'));
 
@@ -29,6 +29,7 @@ function App() {
     };
 
     window.addEventListener('loginSuccess', handleLoginSuccess);
+    window.addEventListener('logoutSuccess', () => setIsLoggedIn(false));
 
     // Check the authentication status based on the query's result
     if (!loading && !error) {
@@ -45,8 +46,13 @@ function App() {
 
   return (
     <div className="App">
+    
       <Suspense fallback={<div>Loading...</div>}>
-        {!isLoggedIn ? <UserApp /> : <ProductApp />}
+        {!isLoggedIn ? 
+        <UserApp />
+        : <ProductApp /> 
+        && <Logout />       
+        } 
       </Suspense>
     </div>
   );
