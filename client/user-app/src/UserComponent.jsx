@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { Alert, Button, Form, Container, Nav, Spinner } from 'react-bootstrap';
+import Login from './login';
+import Signup from './signup';
 
 // GraphQL mutations
 const LOGIN_MUTATION = gql`
@@ -11,14 +13,20 @@ const LOGIN_MUTATION = gql`
 `;
 
 const REGISTER_MUTATION = gql`
-mutation Register($username: String!, $password: String!) {
-    register(username: $username, password: $password)
+mutation Register($username: String!, $email: String!, $password: String!, $firstName: String!, $lastName: String!, $accountType: String!) {
+    register(username: $username, email: $email, password: $password, firstName: $firstName, lastName: $lastName, accountType: $accountType)
   }
 `;
+
+
 
 function UserComponent() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [accountType, setAccountType] = useState('');
     const [activeTab, setActiveTab] = useState('login');
     const [authError, setAuthError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +61,7 @@ function UserComponent() {
         if (activeTab === 'login') {
             await login({ variables: { username, password } });
         } else {
-            await register({ variables: { username, password } });
+            await register({ variables: { username, password, firstName, lastName, email, accountType } });
         }
         setIsSubmitting(false);
     };
@@ -69,31 +77,12 @@ function UserComponent() {
                 </Nav.Item>
             </Nav>
 
-            <Form onSubmit={handleSubmit} className="mt-3">
-                <Form.Group className="mb-3">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control 
-                        type="text" 
-                        placeholder="Username" 
-                        value={username} 
-                        onChange={(e) => setUsername(e.target.value)} />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control 
-                        type="password" 
-                        placeholder="Password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} />
-                </Form.Group>
-
-                {authError && <Alert variant="danger">{authError}</Alert>}
-
-                <Button variant="primary" type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : activeTab === 'login' ? 'Login' : 'Sign Up'}
-                </Button>
-            </Form>
+            {activeTab === 'login' && (
+                <Login />
+            )}
+            {activeTab === 'signup' && (
+                <Signup />
+                )}
         </Container>
     );
 }

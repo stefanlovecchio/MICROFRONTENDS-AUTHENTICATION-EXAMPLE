@@ -16,6 +16,9 @@ export default defineConfig({
         './App': './src/App', // Adjust the path to your main App or specific component
       },
       shared: ['react', 'react-dom', '@apollo/client', 'graphql'],
+      remotes: {
+        userApp: 'http://localhost:3001/dist/assets/remoteEntry.js',
+      },
     }),
   ],
   build: {

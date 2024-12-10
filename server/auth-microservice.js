@@ -33,13 +33,29 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    unique: true, // Ensures email is unique
+    required: true
+  },
+  accountType: {
+    type: String,
+    required: true
   }
 }, { timestamps: true });
 //
 const User = mongoose.model('User', userSchema);
 //
 const typeDefs = gql`
-
   type User {
     username: String!
   }
@@ -49,11 +65,12 @@ const typeDefs = gql`
   }
   type Mutation {
     login(username: String!, password: String!): Boolean
-    register(username: String!, password: String!): Boolean
+    register(username: String!, password: String!, firstName: String!, lastName: String!, email: String!, accountType: String): Boolean
+    logout: Boolean
   }
-
-  
 `;
+
+module.exports = userSchema;
 
 const resolvers = {
   Query: {
@@ -97,18 +114,21 @@ const resolvers = {
       });
       return true;
     },
-    register: async (_, { username, password }) => {
+    register: async (_, { username, password, firstName, lastName, email, accountType }) => {
       const existingUser = await User.findOne({ username });
       if (existingUser) {
         throw new Error('Username is already taken');
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new User({ username, password: hashedPassword });
+      const newUser = new User({ username, password: hashedPassword, firstName, lastName, email, accountType });
       await newUser.save();
       return true;
     },
-
+    logout: (_, __, { res }) => {
+      res.clearCookie('token');
+      return true;
+    }
   },
 };
 //
