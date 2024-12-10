@@ -24,7 +24,6 @@ function Logout() {
 
     return (
         <div>
-            <h2>Logout</h2>
             <button onClick={handleLogout}>Logout</button>
         </div>
     )

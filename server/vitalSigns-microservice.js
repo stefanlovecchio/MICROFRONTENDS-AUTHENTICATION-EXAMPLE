@@ -1,10 +1,11 @@
 // server/product-microservice.js
-
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const userSchema = require('./userSchema');
 require('dotenv').config();
 //
 const mongoose = require('mongoose');
@@ -15,11 +16,22 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+//user model
+const User = model('User', userSchema);
 
-// Product schema definition
+// Initialize express and configure middleware
+const app = express();
+app.use(cors({
+origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'https://studio.apollographql.com'],
+credentials: true,
+}));
+app.use(cookieParser());
+
+
+
+// Vital signs schema definition
 const vitalSignSchema = new Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
   heartRate: Number,
@@ -28,7 +40,8 @@ const vitalSignSchema = new Schema({
   createdAt: { type: Date, default: Date.now },  
 });
 
-const VitalSign = model('VitalSign', vitalSignSchema);
+const vitalSign = model('VitalSign', vitalSignSchema);
+
 // GraphQL schema
 const typeDefs = gql`
     type VitalSign {
@@ -41,20 +54,66 @@ const typeDefs = gql`
     }
 
     type Query {
-        getVitalSigns(userId: ID, username: String): [VitalSign]
+        getVitalSigns(userId:ID, username: String): [VitalSign]
     }
 
     type Mutation {
-        addVitalSign(userId: ID!, heartRate: Int!, bloodPressure: Int!, temperature: Float!): VitalSign
-        updateVitalSign(id: ID!, heartRate: Int, bloodPressure: Int, temperature: Float): VitalSign
+        addVitalSign(username: String!, heartRate: Int!, bloodPressure: Int!, temperature: Float!): VitalSign
+        updateVitalSign(username: String!, heartRate: Int, bloodPressure: Int, temperature: Float): VitalSign
     }
 `;
+
+// Middleware
+app.use(bodyParser.json());
+
+
+//Get vital signs by username function
+const getVitalSignsByUsername = async (username) => {
+  try {
+      const vitalSigns = await vitalSign.aggregate([
+          {
+              $lookup: {
+                  from: 'users',
+                  localField: 'userId',
+                  foreignField: '_id',
+                  as: 'user'
+              }
+          },
+          {
+              $match: {
+                  'user.username': { $regex: username, $options: 'i' }
+              }
+          },
+          {
+              $project: {
+                  userId: 1,
+                  heartRate: 1,
+                  bloodPressure: 1,
+                  temperature: 1,
+                  createdAt: 1
+              }
+          }
+      ]);
+      return vitalSigns;
+  } catch (error) {
+      throw new Error("Error fetching vital signs for this username: " + error.message);
+  }
+}
+
+//Get userId by username
+const getUserIdByUsername = async (username) => {
+  const user = await User.findOne({ username });
+  if (!user) {
+      throw new Error("User not found");
+  }
+  return user._id;
+}
 
 // GraphQL resolvers
 const resolvers = {
   Query: {
       getVitalSigns: async (_, { userId, username }) => {
-          if (userId) {                             
+           if (userId) {                             
               try {
                   const vitalSigns = await vitalSign.find({ userId: userId });                    
                   return vitalSigns;
@@ -62,39 +121,16 @@ const resolvers = {
                   throw new Error("Error fetching vital signs: " + error.message);
               }
           }
-          else if (username) {
-              const vitalSigns = await vitalSign.aggregate([
-              {
-                  $lookup: {
-                      from: 'users',
-                      localField: 'userId',
-                      foreignField: '_id',
-                      as: 'user'
-                  }
-              },
-              {
-                  $match: {
-                      'user.username': { $regex: username, $options: 'i' }
-                  }
-              },
-              {
-                  $project: {
-                      userId: 1,
-                      heartRate: 1,
-                      bloodPressure: 1,
-                      temperature: 1,
-                      createdAt: 1
-                  }
-              }
-          ]);
-          return vitalSigns;
-      } else {
+          else if (username) {               
+          return getVitalSignsByUsername(username);
+       } else {
           throw new Error("Invalid username or userId");
-      }
+      } 
   }
 },
 Mutation: {
-        addVitalSign: async (_, { userId, heartRate, bloodPressure, temperature }) => {
+        addVitalSign: async (_, { username, heartRate, bloodPressure, temperature }) => {
+          const userId = getUserIdByUsername(username);
             try {
               const newVitalSign = new vitalSign({ userId, heartRate, bloodPressure, temperature });
               return await newVitalSign.save();
@@ -119,13 +155,7 @@ Mutation: {
     }
 };
 
-// Initialize express and configure middleware
-const app = express();
-app.use(cors({
-origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'https://studio.apollographql.com'],
-credentials: true,
-}));
-app.use(cookieParser());
+
 
 // Create and start Apollo Server
 const server = new ApolloServer({

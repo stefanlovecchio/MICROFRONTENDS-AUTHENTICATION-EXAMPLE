@@ -1,7 +1,7 @@
 // product-app/src/App.jsx
 import './App.css';
-import ProductComponent from './ProductComponent';
-import  Logout  from 'remote/userApp/Logout';
+import VitalSignsComponent from './VitalSignsComponent';
+
 
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
@@ -16,8 +16,8 @@ function App() {
   return (
     <div className='App'>
       <ApolloProvider client={client}>
-        <Logout />
-        <ProductComponent />
+        
+        <VitalSignsComponent />
       </ApolloProvider>
     </div>
   );

@@ -50,8 +50,11 @@ function App() {
       <Suspense fallback={<div>Loading...</div>}>
         {!isLoggedIn ? 
         <UserApp />
-        : <ProductApp /> 
-        && <Logout />       
+        : <ProductApp />            
+        } 
+        {isLoggedIn ? 
+        <Logout />
+        : null          
         } 
       </Suspense>
     </div>

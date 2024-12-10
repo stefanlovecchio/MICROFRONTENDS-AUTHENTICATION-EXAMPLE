@@ -56,7 +56,6 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 //
 const typeDefs = gql`
-
   type User {
     username: String!
   }
@@ -69,9 +68,9 @@ const typeDefs = gql`
     register(username: String!, password: String!, firstName: String!, lastName: String!, email: String!, accountType: String): Boolean
     logout: Boolean
   }
-
-  
 `;
+
+module.exports = userSchema;
 
 const resolvers = {
   Query: {
