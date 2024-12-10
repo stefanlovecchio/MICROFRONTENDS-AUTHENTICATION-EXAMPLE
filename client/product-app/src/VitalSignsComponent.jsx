@@ -39,25 +39,25 @@ const GET_VITAL_SIGNS = gql`
 `;
 
 const UPDATE_VITAL_SIGN = gql`
-  mutation updateVitalSign(
-    $username: String!,
-    $heartRate: Int,
-    $bloodPressure: Int,
-    $temperature: Float
-  ) {
-    updateVitalSign(
-      id: $id,
-      heartRate: $heartRate,
-      bloodPressure: $bloodPressure,
-      temperature: $temperature
+    mutation updateVitalSign(
+      $id: ID!,
+      $heartRate: Int,
+      $bloodPressure: Int,
+      $temperature: Float
     ) {
-      id
-      heartRate
-      bloodPressure
-      temperature
-      createdAt
+      updateVitalSign(
+        id: $id,
+        heartRate: $heartRate,
+        bloodPressure: $bloodPressure,
+        temperature: $temperature
+      ) {
+        id
+        heartRate
+        bloodPressure
+        temperature
+        createdAt
+      }
     }
-  }
 `;
   
   function VitalSignsComponent() {
@@ -187,7 +187,7 @@ const UPDATE_VITAL_SIGN = gql`
       <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleUpdateVitalSign(vs.id, vs.username);
+                handleUpdateVitalSign(vs.id);
               }}
             >
               <div>

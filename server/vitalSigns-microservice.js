@@ -59,7 +59,7 @@ const typeDefs = gql`
 
     type Mutation {
         addVitalSign(username: String!, heartRate: Int!, bloodPressure: Int!, temperature: Float!): VitalSign
-        updateVitalSign(username: String!, heartRate: Int, bloodPressure: Int, temperature: Float): VitalSign
+        updateVitalSign(id: ID!, heartRate: Int, bloodPressure: Int, temperature: Float): VitalSign
     }
 `;
 
@@ -70,33 +70,40 @@ app.use(bodyParser.json());
 //Get vital signs by username function
 const getVitalSignsByUsername = async (username) => {
   try {
-      const vitalSigns = await vitalSign.aggregate([
-          {
-              $lookup: {
-                  from: 'users',
-                  localField: 'userId',
-                  foreignField: '_id',
-                  as: 'user'
-              }
-          },
-          {
-              $match: {
-                  'user.username': { $regex: username, $options: 'i' }
-              }
-          },
-          {
-              $project: {
-                  userId: 1,
-                  heartRate: 1,
-                  bloodPressure: 1,
-                  temperature: 1,
-                  createdAt: 1
-              }
-          }
-      ]);
-      return vitalSigns;
+    const vitalSigns = await vitalSign.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $match: {
+          'user.username': { $regex: username, $options: 'i' }
+        }
+      },
+      {
+        $addFields: {
+          id: '$_id'
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          id: 1,
+          userId: 1,
+          heartRate: 1,
+          bloodPressure: 1,
+          temperature: 1,
+          createdAt: 1
+        }
+      }
+    ]);
+    return vitalSigns;
   } catch (error) {
-      throw new Error("Error fetching vital signs for this username: " + error.message);
+    throw new Error("Error fetching vital signs for this username: " + error.message);
   }
 }
 
@@ -139,6 +146,7 @@ Mutation: {
           
         updateVitalSign: async (_, { id, heartRate, bloodPressure, temperature }) => {
             try {
+              
                 const updatedVitalSign = await vitalSign.findByIdAndUpdate(
                     id,
                     { heartRate, bloodPressure, temperature }, 
