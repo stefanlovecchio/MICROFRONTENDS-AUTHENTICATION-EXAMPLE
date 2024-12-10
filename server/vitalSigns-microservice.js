@@ -103,11 +103,8 @@ const getVitalSignsByUsername = async (username) => {
 //Get userId by username
 const getUserIdByUsername = async (username) => {
   const user = await User.findOne({ username });
-  if (!user) {
-      throw new Error("User not found");
-  }
   return user._id;
-}
+};
 
 // GraphQL resolvers
 const resolvers = {
@@ -130,7 +127,8 @@ const resolvers = {
 },
 Mutation: {
         addVitalSign: async (_, { username, heartRate, bloodPressure, temperature }) => {
-          const userId = getUserIdByUsername(username);
+          const userId = await getUserIdByUsername(username);
+          console.log(userId);
             try {
               const newVitalSign = new vitalSign({ userId, heartRate, bloodPressure, temperature });
               return await newVitalSign.save();

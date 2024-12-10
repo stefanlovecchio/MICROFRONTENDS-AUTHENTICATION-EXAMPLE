@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
+const { ApolloServer, gql } = require('apollo-server-express');
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
