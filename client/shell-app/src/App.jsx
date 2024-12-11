@@ -2,12 +2,11 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import './App.css';
-import 'bulma/css/bulma.min.css';
 import Logout from './logout';
-const UserApp = lazy(() =>
-    import ('userApp/App'));
-const ProductApp = lazy(() =>
-    import ('productApp/App'));
+
+const UserApp = lazy(() => import('userApp/App'));
+const ProductApp = lazy(() => import('productApp/App'));
+const MotivationalTipsApp = lazy(() => import('motivationalTipsApp/App'));
 
 // GraphQL query to check the current user's authentication status
 const CURRENT_USER_QUERY = gql `
@@ -48,26 +47,26 @@ function App() {
     if (loading) return <div > Loading... < /div>;
     if (error) return <div > Error!{ error.message } < /div>;
 
-    return ( <
-        div className = "App" >
+  return (
+    <div className="App">
+    
+      <Suspense fallback={<div>Loading...</div>}>
+        {!isLoggedIn ? 
+        <UserApp />
+        : <ProductApp />            
+        } 
+        {isLoggedIn ? 
+        <Logout />
+        : null          
+        } 
+        {isLoggedIn ? 
+        <MotivationalTipsApp />
+        : null          
+        } 
+      </Suspense>
+    </div>
+  );
+}
 
-        <
-        Suspense fallback = { < div > Loading... < /div>}> {
-                !isLoggedIn ?
-                    <
-                    UserApp / >
-                    :
-                    < ProductApp / >
-            } {
-                isLoggedIn ?
-                    <
-                    Logout / >
-                    :
-                    null
-            } <
-            /Suspense> <
-            /div>
-        );
-    }
+export default App;
 
-    export default App;

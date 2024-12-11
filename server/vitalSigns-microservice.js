@@ -24,8 +24,10 @@ const User = model('User', userSchema);
 // Initialize express and configure middleware
 const app = express();
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'https://studio.apollographql.com'],
-    credentials: true,
+
+origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'https://studio.apollographql.com'],
+credentials: true,
+
 }));
 app.use(cookieParser());
 
@@ -180,3 +182,26 @@ server.start().then(() => {
     server.applyMiddleware({ app, cors: false });
     app.listen({ port: 4002 }, () => console.log(`🚀 Server ready at http://localhost:4002${server.graphqlPath}`));
 });
+
+  typeDefs,
+  resolvers,
+  context: ({ req }) => {
+    const token = req.cookies['token'];
+    console.log("token in vital signs:",token);
+    if (token) {
+      try {
+        const user = jwt.verify(token, process.env.JWT_SECRET); // Replace 'your_secret_key' with your actual secret key
+        return { user };
+      } catch (e) {
+        throw new Error('Your session expired. Sign in again.');
+      }
+    }
+  },
+});
+//
+server.start().then(() => {
+  server.applyMiddleware({ app, cors: false });
+  app.listen({ port: 4002 }, () => 
+    console.log(`🚀 Vital Signs Server ready at http://localhost:4002${server.graphqlPath}`));
+});
+
