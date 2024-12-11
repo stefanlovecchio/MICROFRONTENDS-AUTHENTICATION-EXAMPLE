@@ -3,47 +3,49 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import './App.css';
 import Logout from './logout';
+
 const UserApp = lazy(() => import('userApp/App'));
 const ProductApp = lazy(() => import('productApp/App'));
 const MotivationalTipsApp = lazy(() => import('motivationalTipsApp/App'));
 
 // GraphQL query to check the current user's authentication status
-const CURRENT_USER_QUERY = gql`
+const CURRENT_USER_QUERY = gql `
   query CurrentUser {
     currentUser {
       username
     }
   }
 `;
+
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Use Apollo's useQuery hook to perform the authentication status check on app load
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
-    fetchPolicy: 'network-only',
-  });
+    // Use Apollo's useQuery hook to perform the authentication status check on app load
+    const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
+        fetchPolicy: 'network-only',
+    });
 
-  useEffect(() => {
-    // Listen for the custom loginSuccess event from the UserApp
-    const handleLoginSuccess = (event) => {
-      setIsLoggedIn(event.detail.isLoggedIn);
-    };
+    useEffect(() => {
+        // Listen for the custom loginSuccess event from the UserApp
+        const handleLoginSuccess = (event) => {
+            setIsLoggedIn(event.detail.isLoggedIn);
+        };
 
-    window.addEventListener('loginSuccess', handleLoginSuccess);
-    window.addEventListener('logoutSuccess', () => setIsLoggedIn(false));
+        window.addEventListener('loginSuccess', handleLoginSuccess);
+        window.addEventListener('logoutSuccess', () => setIsLoggedIn(false));
 
-    // Check the authentication status based on the query's result
-    if (!loading && !error) {
-      setIsLoggedIn(!!data.currentUser);
-    }
+        // Check the authentication status based on the query's result
+        if (!loading && !error) {
+            setIsLoggedIn(!!data.currentUser);
+        }
 
-    return () => {
-      window.removeEventListener('loginSuccess', handleLoginSuccess);
-    };
-  }, [loading, error, data]);
+        return () => {
+            window.removeEventListener('loginSuccess', handleLoginSuccess);
+        };
+    }, [loading, error, data]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error! {error.message}</div>;
+    if (loading) return <div > Loading... < /div>;
+    if (error) return <div > Error!{ error.message } < /div>;
 
   return (
     <div className="App">
