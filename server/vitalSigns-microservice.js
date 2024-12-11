@@ -24,7 +24,6 @@ const User = model('User', userSchema);
 // Initialize express and configure middleware
 const app = express();
 app.use(cors({
-
 origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'https://studio.apollographql.com'],
 credentials: true,
 
@@ -163,26 +162,6 @@ const resolvers = {
 
 // Create and start Apollo Server
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: ({ req }) => {
-        const token = req.cookies['token'];
-        if (token) {
-            try {
-                const user = jwt.verify(token, 'your_secret_key'); // Replace 'your_secret_key' with your actual secret key
-                return { user };
-            } catch (e) {
-                throw new Error('Your session expired. Sign in again.');
-            }
-        }
-    },
-});
-//
-server.start().then(() => {
-    server.applyMiddleware({ app, cors: false });
-    app.listen({ port: 4002 }, () => console.log(`🚀 Server ready at http://localhost:4002${server.graphqlPath}`));
-});
-
   typeDefs,
   resolvers,
   context: ({ req }) => {
