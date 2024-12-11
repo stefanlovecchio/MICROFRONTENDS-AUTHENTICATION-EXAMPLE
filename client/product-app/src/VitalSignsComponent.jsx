@@ -1,4 +1,3 @@
-// product-app/src/ProductComponent.jsx
 import { format } from 'date-fns';
 import React, { useState } from 'react';
 import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
@@ -76,11 +75,13 @@ const UPDATE_VITAL_SIGN = gql`
         const [updateVitalSign] = useMutation(UPDATE_VITAL_SIGN);
         const [formState, setFormState] = useState({});
 
-        // Automatically fetch vital signs for logged-in user
+        // TODO: Automatically fetch vital signs for logged-in user*********************
+        //need to get user data from shell app? 
+        
   /*useEffect(() => {
-    if (user && user.token) {
+    if (user.userType === 'patient') {
       fetchVitalSigns({ variables: { userId: user.id } });
-    }
+}
   }, [user, fetchVitalSigns]);*/
   
   const handleInputChange = (id, field, value) => {
@@ -222,7 +223,7 @@ const UPDATE_VITAL_SIGN = gql`
                 />
               </div>
               <div>
-                <label>Created At:</label>
+                <label>Visit Date:</label>
                 <p>{formattedDate} </p>
               </div>
               <button type="submit">Update</button>

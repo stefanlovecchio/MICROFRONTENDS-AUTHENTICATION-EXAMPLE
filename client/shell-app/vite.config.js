@@ -11,6 +11,7 @@ export default defineConfig({
       remotes: {
         userApp: 'http://localhost:3001/dist/assets/remoteEntry.js',
         productApp: 'http://localhost:3002/dist/assets/remoteEntry.js', 
+        motivationalTipsApp: 'http://localhost:3003/dist/assets/remoteEntry.js',
       },
       shared: ['react', 'react-dom', '@apollo/client', 'graphql'],
     }),
