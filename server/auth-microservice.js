@@ -13,7 +13,7 @@ const app = express();
 // Add cors middleware
 app.use(cors({
   origin: ['http://localhost:3000','http://localhost:3001',
-  'http://localhost:3002','https://studio.apollographql.com'], // Adjust the origin according to your micro frontends' host
+  'http://localhost:3002','http://localhost:3003', 'https://studio.apollographql.com'], // Adjust the origin according to your micro frontends' host
   credentials: true, // Allow cookies to be sent
 }));
 app.use(cookieParser());
@@ -24,34 +24,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch(err => console.error("MongoDB connection error:", err));
 //
 // User schema definition
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    unique: true, // Ensures username is unique
-    required: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    unique: true, // Ensures email is unique
-    required: true
-  },
-  accountType: {
-    type: String,
-    required: true
-  }
-}, { timestamps: true });
+const userSchema = require('./userSchema');
 //
 const User = mongoose.model('User', userSchema);
 //
@@ -83,7 +56,7 @@ const resolvers = {
 
       try {
         // Verify and decode the JWT. Note: Make sure to handle errors appropriately in a real app
-        const decoded = jwt.verify(token, 'your_secret_key');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         return { username: decoded.username };
       } catch (error) {
         // Token verification failed
@@ -105,7 +78,7 @@ const resolvers = {
         throw new Error('Invalid password');
       }
       //
-      const token = jwt.sign({ username }, 'your_secret_key', { expiresIn: '1d' });
+      const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1d' });
       res.cookie('token', token, {
         httpOnly: true,
         //sameSite: 'None',
@@ -141,6 +114,6 @@ server.start().then(() => {
   server.applyMiddleware({ app, cors: false });
   //
   app.listen({ port: 4001 }, () =>
-    console.log(`🚀 Server ready at http://localhost:4001${server.graphqlPath}`)
+    console.log(`🚀 Auth Server ready at http://localhost:4001${server.graphqlPath}`)
   );
 });

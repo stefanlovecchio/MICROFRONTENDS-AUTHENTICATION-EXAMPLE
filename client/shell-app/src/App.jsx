@@ -5,6 +5,7 @@ import './App.css';
 import Logout from './logout';
 const UserApp = lazy(() => import('userApp/App'));
 const ProductApp = lazy(() => import('productApp/App'));
+const MotivationalTipsApp = lazy(() => import('motivationalTipsApp/App'));
 
 // GraphQL query to check the current user's authentication status
 const CURRENT_USER_QUERY = gql`
@@ -54,6 +55,10 @@ function App() {
         } 
         {isLoggedIn ? 
         <Logout />
+        : null          
+        } 
+        {isLoggedIn ? 
+        <MotivationalTipsApp />
         : null          
         } 
       </Suspense>
