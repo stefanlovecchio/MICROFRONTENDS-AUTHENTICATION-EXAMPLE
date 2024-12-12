@@ -35,10 +35,16 @@ const User = mongoose.model('User', userSchema);
 const typeDefs = gql`
   type User {
     username: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    accountType: String!
   }
 
   type Query {
     currentUser: User
+    currentUserType: User
   }
   type Mutation {
     login(username: String!, password: String!): Boolean

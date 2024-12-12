@@ -8,13 +8,13 @@ const client = new ApolloClient({
   credentials: 'include' // Send cookies along with the request
 })
 
-function App() {
+function App(props) {
 
   return (
     <>
       <div className='App'>
         <ApolloProvider client={client} >
-          <MotivationalTipsComponent />
+          <MotivationalTipsComponent props={props} />
         </ApolloProvider>
       </div>
     </>

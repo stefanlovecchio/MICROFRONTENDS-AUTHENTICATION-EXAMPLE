@@ -47,6 +47,7 @@ const typeDefs = gql`
     type Query {
         getMotivationalTips: [MotivationalTip]
         getPatientMotivationalTips(patientUsername: String): [MotivationalTip]
+        getCurrentUser: User
     }
 
 
@@ -79,7 +80,18 @@ const resolvers = {
             } catch (error) {
                 throw new Error("Error fetching motivational tips for patient: " + error.message);
             }
-        }
+        },
+        getCurrentUser: async (_, __, { req }) => {
+            const token = req.cookies['token'];
+            if (!token) return null;
+            try {
+                const user = jwt.verify(token, process.env.JWT_SECRET);   \
+                console.log(user);
+                return user;             
+            } catch (error) {
+                return null;
+            }
+        },
     },
     Mutation: {
         addMotivationalTip: async (_, { nurseUsername, patientUsername, tip }) => {

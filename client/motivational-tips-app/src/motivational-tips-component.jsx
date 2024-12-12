@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, props } from 'react';
 import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
+import PatientTips from './patientTips.jsx';
 
 const ADD_MOTIVATIONAL_TIP = gql`
 mutation AddMotivationalTip(
@@ -22,18 +23,6 @@ mutation AddMotivationalTip(
 }
 `;
 
-const GET_PATIENT_MOTIVATIONAL_TIPS = gql`
-    query GetPatientMotivationalTips($patientUsername: String!) {
-        getPatientMotivationalTips(patientUsername: $patientUsername) {
-            id
-            nurseUsername
-            patientUsername
-            tip
-            nurseName            
-        }
-    }
-    `;
-
 const GET_ALL_MOTIVATIONAL_TIPS = gql`
     query GetMotivationalTips {
         getMotivationalTips {
@@ -46,8 +35,13 @@ const GET_ALL_MOTIVATIONAL_TIPS = gql`
     }
     `;
 
-function MotivationalTipsComponent() {
 
+function MotivationalTipsComponent({props}) {
+    
+    const {username, userType} = props;
+    console.log("props accountType", {userType});
+    console.log("usertype",userType);
+    
     const [formData, setFormData] = useState({
         nurseUsername: '',
         patientUsername: '',
@@ -56,15 +50,15 @@ function MotivationalTipsComponent() {
 
     const [tips, setTips] = useState([]);
     const [fetchMotivationalTips, { loading, error, data }] = useLazyQuery(GET_ALL_MOTIVATIONAL_TIPS);
-    const [getPatientMotivationalTips] = useLazyQuery(GET_PATIENT_MOTIVATIONAL_TIPS);
+
     const [addMotivationalTip] = useMutation(
         ADD_MOTIVATIONAL_TIP,
         {
           variables: formData,
         }
       );
+      
     const [formState, setFormState] = useState({});
-
     
 
       const handleAddMotivationalTip = async (e) => {
@@ -104,12 +98,12 @@ function MotivationalTipsComponent() {
       console.log(loading, error, data);
       return (
         <div>
-          <h1>Motivational Tips</h1>
-          <button onClick={handleFetchMotivationalTips}>Fetch All Motivational Tips</button>
           {loading && <p>Loading...</p>}
           {error && <p>Error. Please try again later.</p>}
           {data && (
             <div className='existingTips'>
+          <h1>Tip Repository</h1>
+          <button onClick={handleFetchMotivationalTips}>Fetch All Motivational Tips</button>
                 <ul>
                 {data?.getMotivationalTips?.map((tip) => (
                     <li key={tip.id}>
@@ -123,6 +117,8 @@ function MotivationalTipsComponent() {
                 </ul>
             </div>
           )}
+          {userType =='nurse' &&(
+            <div>
           <h2>Add a New Motivational Tip</h2>
           <form onSubmit={handleAddMotivationalTip}>
             <label>
@@ -153,6 +149,15 @@ function MotivationalTipsComponent() {
             </label>
             <button type="submit">Submit</button>
           </form>
+          </div>
+          )}
+          {userType =='patient' &&(
+            <div>
+                <PatientTips username={username}/>
+            </div>
+          )
+
+          }
           </div>
       )
 }

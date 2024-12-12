@@ -31,10 +31,16 @@ const User = mongoose.model('User', userSchema);
 const typeDefs = gql`
   type User {
     username: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    accountType: String!
   }
 
   type Query {
     currentUser: User
+    currentUserType: User
   }
   type Mutation {
     login(username: String!, password: String!): Boolean
@@ -63,8 +69,25 @@ const resolvers = {
         return null;
       }
     },
-  },
   
+  currentUserType: (_, __, { req }) => {
+    // Assuming the JWT token is sent via an HTTP-only cookie named 'token'
+    const token = req.cookies['token'];
+    if (!token) {
+      return null; // No user is logged in
+    }
+
+    try {
+      // Verify and decode the JWT. Note: Make sure to handle errors appropriately in a real app
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("decoded jwt token: " + decoded.accountType);
+      return { accountType: decoded.accountType };
+    } catch (error) {
+      // Token verification failed
+      return null;
+    }
+  },
+},
   Mutation: {
     login: async (_, { username, password }, { res }) => {
       // In a real app, validate username and password against a database
@@ -72,13 +95,12 @@ const resolvers = {
       if (!user) {
         throw new Error('User not found');
       }
-
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
         throw new Error('Invalid password');
       }
       //
-      const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1d' });
+      const token = jwt.sign({ username: user.username, accountType: user.accountType }, process.env.JWT_SECRET, { expiresIn: '1d' });
       res.cookie('token', token, {
         httpOnly: true,
         //sameSite: 'None',
