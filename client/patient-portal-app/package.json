@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "dev": "vite  --port=3003 --strictPort",
+        "dev": "vite  --port=3004 --strictPort",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
