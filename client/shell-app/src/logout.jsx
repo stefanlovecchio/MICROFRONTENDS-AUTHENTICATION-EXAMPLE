@@ -7,8 +7,6 @@ const LOGOUT_MUTATION = gql`
 `;
 
 function Logout() {
-    console.log("Logout component rendered");
-
     const [logout] = useMutation(LOGOUT_MUTATION, {
         onCompleted: () => {
             // Dispatch custom event upon successful logout
