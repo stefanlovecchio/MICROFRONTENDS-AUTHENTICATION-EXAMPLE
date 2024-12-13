@@ -97,7 +97,7 @@ function MotivationalTipsComponent({props}) {
     
       console.log(loading, error, data);
       return (
-        <div>
+        <div className="tipsApp">
           {loading && <p>Loading...</p>}
           {error && <p>Error. Please try again later.</p>}
           {data && (

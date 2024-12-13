@@ -55,14 +55,13 @@ function App() {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error! {error.message}</div>;
-if (data.currentUser.username && userType.data.currentUserType.accountType){
-  console.log(data.currentUser.username);
-  console.log(userType.data.currentUserType.accountType);
+
+
   return (
     <div className="App">
     
       <Suspense fallback={<div>Loading...</div>}>
-        {!isLoggedIn ? 
+        {!isLoggedIn && userType.data.currentUserType.accountType ? 
         <UserApp />
         : <ProductApp userType={userType.data.currentUserType.accountType}/>            
         } 
@@ -70,19 +69,20 @@ if (data.currentUser.username && userType.data.currentUserType.accountType){
         <Logout />
         : null          
         } 
-        {isLoggedIn ? 
+        {isLoggedIn && data.currentUser.username && userType.data.currentUserType.accountType ? 
         <MotivationalTipsApp 
-        userType={userType.data.currentUserType.accountType} 
-        username={data.currentUser.username}  
+          userType={userType.data.currentUserType.accountType} 
+          username={data.currentUser?.username}  
         />
-        : null          
+                 
+      : null          
         } 
       </Suspense>
     </div>
   );
 }
  
-}
+
 
 export default App;
 
