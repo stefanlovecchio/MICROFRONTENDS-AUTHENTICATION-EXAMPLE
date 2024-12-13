@@ -13,10 +13,10 @@ function UserComponent() {
         <Container className="p-5">
             <Nav variant="tabs" activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
                 <Nav.Item>
-                    <Nav.Link eventKey="login">Login</Nav.Link>
+                    <Nav.Link id="login-nav" eventKey="login">Login</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="signup">Sign Up</Nav.Link>
+                    <Nav.Link id="sign-up-nav" eventKey="signup">Sign Up</Nav.Link>
                 </Nav.Item>
             </Nav>
 

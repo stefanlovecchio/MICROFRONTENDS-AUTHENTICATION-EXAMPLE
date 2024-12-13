@@ -10,10 +10,11 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect(
+    import.meta.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 const User = model('User', userSchema);
@@ -21,12 +22,12 @@ const User = model('User', userSchema);
 
 const app = express();
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002','http://localhost:3003', 'https://studio.apollographql.com'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'https://studio.apollographql.com'],
     credentials: true,
 }));
 app.use(cookieParser());
 
-const motivationalTipsSchema = new Schema({ 
+const motivationalTipsSchema = new Schema({
     nurseUsername: String,
     patientUsername: String,
     tip: String,
@@ -35,7 +36,7 @@ const motivationalTipsSchema = new Schema({
 
 const motivationalTip = model('MotivationalTip', motivationalTipsSchema);
 
-const typeDefs = gql`
+const typeDefs = gql `
     type MotivationalTip {
         id: ID,
         nurseUsername: String,
@@ -60,41 +61,41 @@ const typeDefs = gql`
 
 app.use(bodyParser.json());
 
-const getNameByUsername = async (username) => {
+const getNameByUsername = async(username) => {
     const user = await User.findOne({ username });
     return user.firstName + " " + user.lastName;
 }
 
 const resolvers = {
     Query: {
-        getMotivationalTips: async () => {
+        getMotivationalTips: async() => {
             try {
                 return await motivationalTip.find({});
             } catch (error) {
                 throw new Error("Error fetching motivational tips: " + error.message);
             }
         },
-        getPatientMotivationalTips: async (_, { patientUsername }) => { 
+        getPatientMotivationalTips: async(_, { patientUsername }) => {
             try {
                 return await motivationalTip.find({ patientUsername });
             } catch (error) {
                 throw new Error("Error fetching motivational tips for patient: " + error.message);
             }
         },
-        getCurrentUser: async (_, __, { req }) => {
+        getCurrentUser: async(_, __, { req }) => {
             const token = req.cookies['token'];
             if (!token) return null;
             try {
-                const user = jwt.verify(token, process.env.JWT_SECRET);   \
+                const user = jwt.verify(token, process.env.JWT_SECRET);\
                 console.log(user);
-                return user;             
+                return user;
             } catch (error) {
                 return null;
             }
         },
     },
     Mutation: {
-        addMotivationalTip: async (_, { nurseUsername, patientUsername, tip }) => {
+        addMotivationalTip: async(_, { nurseUsername, patientUsername, tip }) => {
             console.log("Adding tip in backend: ", tip, nurseUsername, patientUsername);
             try {
                 const nurse = await User.findOne({ username: nurseUsername });
@@ -112,7 +113,7 @@ const resolvers = {
                 throw new Error("Error adding motivational tip: " + error.message);
             }
         },
-        deleteMotivationalTip: async (_, { id }) => {
+        deleteMotivationalTip: async(_, { id }) => {
             try {
                 await motivationalTip.findByIdAndDelete(id);
                 return true;
@@ -120,9 +121,9 @@ const resolvers = {
                 throw new Error("Error deleting motivational tip: " + error.message);
             }
         },
-        updateMotivationalTip: async (_, { id, nurseUsername, patientUsername, tip }) => {
+        updateMotivationalTip: async(_, { id, nurseUsername, patientUsername, tip }) => {
             try {
-                const updatedTip = await motivationalTip.findByIdAndUpdate(id, {  nurseUsername, patientUsername, tip }, { new: true });
+                const updatedTip = await motivationalTip.findByIdAndUpdate(id, { nurseUsername, patientUsername, tip }, { new: true });
                 return updatedTip;
             } catch (error) {
                 throw new Error("Error updating motivational tip: " + error.message);
@@ -136,7 +137,7 @@ const server = new ApolloServer({
     resolvers,
     context: ({ req }) => {
         const token = req.cookies['token'];
-        console.log("token in tips:",token);
+        console.log("token in tips:", token);
         if (token) {
             try {
                 const user = jwt.verify(token, process.env.JWT_SECRET);
@@ -153,4 +154,4 @@ server.start().then(() => {
     app.listen({ port: 4003 }, () =>
         console.log(`��� Server ready at http://localhost:4003${server.graphqlPath}`)
     );
- });
+});

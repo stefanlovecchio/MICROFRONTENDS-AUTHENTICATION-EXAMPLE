@@ -12,7 +12,8 @@ export default defineConfig({
                 userApp: 'http://localhost:3001/dist/assets/remoteEntry.js',
                 productApp: 'http://localhost:3002/dist/assets/remoteEntry.js',
                 motivationalTipsApp: 'http://localhost:3003/dist/assets/remoteEntry.js',
-                patientPortalApp: 'http://localhost:3004/dist/assets/remoteEntry.js'
+                patientPortalApp: 'http://localhost:3004/dist/assets/remoteEntry.js',
+                checklistApp: 'http://localhost:3005/dist/assets/remoteEntry.js'
             },
             shared: ['react', 'react-dom', '@apollo/client', 'graphql'],
         }),

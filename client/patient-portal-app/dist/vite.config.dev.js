@@ -13,7 +13,6 @@ var _vitePluginFederation = _interopRequireDefault(require("@originjs/vite-plugi
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-// product-app/vite.config.js for productApp
 //
 var _default = (0, _vite.defineConfig)({
   server: {

@@ -144,7 +144,7 @@ const UPDATE_VITAL_SIGN = gql`
   };
 
   return (
-    <div>
+    <div className="vitals-container">
       <h2>Vital Signs</h2>
       
       <input
@@ -235,6 +235,6 @@ const UPDATE_VITAL_SIGN = gql`
 
     </div>
   );
-};
+}
 
 export default VitalSignsComponent;

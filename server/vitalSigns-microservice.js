@@ -12,10 +12,11 @@ const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 // MongoDB connection setup
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect(
+    import.meta.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 //user model
@@ -24,8 +25,8 @@ const User = model('User', userSchema);
 // Initialize express and configure middleware
 const app = express();
 app.use(cors({
-origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'https://studio.apollographql.com'],
-credentials: true,
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'https://studio.apollographql.com'],
+    credentials: true,
 
 }));
 app.use(cookieParser());
@@ -162,25 +163,24 @@ const resolvers = {
 
 // Create and start Apollo Server
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => {
-    const token = req.cookies['token'];
-    console.log("token in vital signs:",token);
-    if (token) {
-      try {
-        const user = jwt.verify(token, process.env.JWT_SECRET); // Replace 'your_secret_key' with your actual secret key
-        return { user };
-      } catch (e) {
-        throw new Error('Your session expired. Sign in again.');
-      }
-    }
-  },
+    typeDefs,
+    resolvers,
+    context: ({ req }) => {
+        const token = req.cookies['token'];
+        console.log("token in vital signs:", token);
+        if (token) {
+            try {
+                const user = jwt.verify(token, process.env.JWT_SECRET); // Replace 'your_secret_key' with your actual secret key
+                return { user };
+            } catch (e) {
+                throw new Error('Your session expired. Sign in again.');
+            }
+        }
+    },
 });
 //
 server.start().then(() => {
-  server.applyMiddleware({ app, cors: false });
-  app.listen({ port: 4002 }, () => 
-    console.log(`🚀 Vital Signs Server ready at http://localhost:4002${server.graphqlPath}`));
+    server.applyMiddleware({ app, cors: false });
+    app.listen({ port: 4002 }, () =>
+        console.log(`🚀 Vital Signs Server ready at http://localhost:4002${server.graphqlPath}`));
 });
-

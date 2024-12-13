@@ -14,8 +14,11 @@ function App(props) {
     <>
       <div className='App'>
         <ApolloProvider client={client} >
+        <React.Suspense fallback={<div>Loading motivational tips...</div>}>
           <MotivationalTipsComponent props={props} />
+          </React.Suspense>
         </ApolloProvider>
+        <p>App is working!</p>
       </div>
     </>
   )
