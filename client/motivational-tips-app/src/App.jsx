@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import './App.css'
+import React from 'react';
 import MotivationalTipsComponent from './motivational-tips-component';
 
 const client = new ApolloClient({

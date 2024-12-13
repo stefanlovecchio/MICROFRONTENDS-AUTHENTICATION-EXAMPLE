@@ -8,12 +8,10 @@ const app = express();
 app.use(bodyParser.json());
 
 // MongoDB Connection
-mongoose.connect(
-    import.meta.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
-const db = mongoose.connection;
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.error("MongoDB connection error:", err));
+    const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // Checklist Schema

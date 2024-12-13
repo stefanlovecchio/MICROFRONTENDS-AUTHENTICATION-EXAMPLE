@@ -12,12 +12,11 @@ const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 // MongoDB connection setup
-mongoose.connect(
-    import.meta.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.error("MongoDB connection error:", err));
 const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 //user model
 const User = model('User', userSchema);
