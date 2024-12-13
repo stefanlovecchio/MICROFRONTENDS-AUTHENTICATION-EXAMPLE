@@ -1,0 +1,73 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+  color: #e44040;
+  line-height: 1.6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(160, 142, 142, 0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #30965e;
+}
+
+form label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+form label input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #30965e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #357ab8;
+}
+
+button:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
