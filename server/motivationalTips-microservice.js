@@ -16,6 +16,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 const User = model('User', userSchema);
 
 
@@ -36,6 +37,14 @@ const motivationalTipsSchema = new Schema({
 const motivationalTip = model('MotivationalTip', motivationalTipsSchema);
 
 const typeDefs = gql`
+type User {
+    id: ID!
+    username: String!
+    firstName: String
+    lastName: String
+    email: String!
+    accountType: String!
+  }
     type MotivationalTip {
         id: ID,
         nurseUsername: String,
@@ -49,6 +58,7 @@ const typeDefs = gql`
         getPatientMotivationalTips(patientUsername: String): [MotivationalTip]
         getCurrentUser: User
     }
+    
 
 
     type Mutation{
@@ -85,7 +95,7 @@ const resolvers = {
             const token = req.cookies['token'];
             if (!token) return null;
             try {
-                const user = jwt.verify(token, process.env.JWT_SECRET);   \
+                const user = jwt.verify(token, process.env.JWT_SECRET);   
                 console.log(user);
                 return user;             
             } catch (error) {
