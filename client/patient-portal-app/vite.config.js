@@ -1,16 +1,16 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+// product-app/vite.config.js for productApp
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import federation from '@originjs/vite-plugin-federation';
-
-// https://vite.dev/config/
+//
 export default defineConfig({
     server: {
-        port: 3003,
+        port: 3004, // Specify the port to avoid conflicts
     },
     plugins: [
         react(),
         federation({
-            name: 'motivationalTipsApp',
+            name: 'patientPortalApp',
             filename: 'remoteEntry.js',
             exposes: {
                 './App': './src/App', // Adjust the path to your main App or specific component
@@ -18,7 +18,7 @@ export default defineConfig({
             shared: ['react', 'react-dom', '@apollo/client', 'graphql'],
             remotes: {
                 userApp: 'http://localhost:3001/dist/assets/remoteEntry.js',
-            }
+            },
         }),
     ],
     build: {
@@ -26,5 +26,6 @@ export default defineConfig({
         target: 'esnext',
         minify: false,
         cssCodeSplit: false,
-    }
+    },
+
 });
