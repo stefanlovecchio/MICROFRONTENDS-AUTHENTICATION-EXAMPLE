@@ -10,6 +10,7 @@ const UserApp = lazy(() => import('userApp/App'));
 const ProductApp = lazy(() => import('productApp/App'));
 const PatientPortalApp = lazy(() => import('patientPortalApp/App'));
 const MotivationalTipsApp = lazy(() => import('motivationalTipsApp/App'));
+const ChecklistApp = lazy(() => import('checklistApp/App'));
 
 // GraphQL queries
 const CURRENT_USER_QUERY = gql`
@@ -75,6 +76,13 @@ function App() {
           : null}
           {isLoggedIn && userType.data.currentUserType.accountType && userType.data.currentUserType.accountType== 'patient' ? 
             <PatientPortalApp />
+            : <ProductApp />}                      
+          {isLoggedIn ? 
+          <Logout />
+          : null          
+          } 
+          {isLoggedIn && userType.data.currentUserType.accountType && userType.data.currentUserType.accountType== 'checklist' ? 
+            <ChecklistApp />
             : <ProductApp />}                      
           {isLoggedIn ? 
           <Logout />

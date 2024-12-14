@@ -357,7 +357,7 @@ function satisfy(version, range) {
 const currentImports = {};
 
 // eslint-disable-next-line no-undef
-const moduleMap = {'react':{get:()=>()=>__federation_import(new URL('__federation_shared_react-DYlhdcjt.js', import.meta.url).href),import:true},'react-dom':{get:()=>()=>__federation_import(new URL('__federation_shared_react-dom-81eQxVv-.js', import.meta.url).href),import:true},'@apollo/client':{get:()=>()=>__federation_import(new URL('__federation_shared_@apollo/client-CRJJpDR_.js', import.meta.url).href),import:true},'graphql':{get:()=>()=>__federation_import(new URL('__federation_shared_graphql-XMt0SH4c.js', import.meta.url).href),import:true}};
+const moduleMap = {'react':{get:()=>()=>__federation_import(new URL('__federation_shared_react-DymjBti2.js', import.meta.url).href),import:true},'react-dom':{get:()=>()=>__federation_import(new URL('__federation_shared_react-dom-DmtNEs29.js', import.meta.url).href),import:true},'@apollo/client':{get:()=>()=>__federation_import(new URL('__federation_shared_@apollo/client-BMaqy4hC.js', import.meta.url).href),import:true},'graphql':{get:()=>()=>__federation_import(new URL('__federation_shared_graphql-XMt0SH4c.js', import.meta.url).href),import:true}};
 const moduleCache = Object.create(null);
 async function importShared(name, shareScope = 'default') {
   return moduleCache[name]

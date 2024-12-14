@@ -1,5 +1,5 @@
-import { importShared } from '../__federation_fn_import-BBeHoz6y.js';
-import { r as reactExports, g as getDefaultExportFromCjs } from '../__federation_shared_react-DYlhdcjt.js';
+import { importShared } from '../__federation_fn_import-DHhB77oP.js';
+import { r as requireReact, g as getDefaultExportFromCjs } from '../index-HOoSuXxG.js';
 
 function _mergeNamespaces(n, m) {
   for (var i = 0; i < m.length; i++) {
@@ -11925,27 +11925,34 @@ gql["default"] = gql;
 
 var rehackt = {exports: {}};
 
-(function (module) {
-	// We don't want bundlers to error when they encounter usage of any of these exports.
-	// It's up to the package author to ensure that if they access React internals,
-	// they do so in a safe way that won't break if React changes how they use these internals.
-	// (e.g. only access them in development, and only in an optional way that won't
-	// break if internals are not there or do not have the expected structure)
-	// @ts-ignore
-	module.exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = undefined;
-	// @ts-ignore
-	module.exports.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = undefined;
-	// @ts-ignore
-	module.exports.__SERVER_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = undefined;
-	// Here we actually pull in the React library and add everything
-	// it exports to our own `module.exports`.
-	// If React suddenly were to add one of the above "polyfilled" exports,
-	// the React version would overwrite our version, so this should be
-	// future-proof.
-	Object.assign(module.exports, reactExports); 
-} (rehackt));
+var hasRequiredRehackt;
 
-var rehacktExports = rehackt.exports;
+function requireRehackt () {
+	if (hasRequiredRehackt) return rehackt.exports;
+	hasRequiredRehackt = 1;
+	(function (module) {
+		// We don't want bundlers to error when they encounter usage of any of these exports.
+		// It's up to the package author to ensure that if they access React internals,
+		// they do so in a safe way that won't break if React changes how they use these internals.
+		// (e.g. only access them in development, and only in an optional way that won't
+		// break if internals are not there or do not have the expected structure)
+		// @ts-ignore
+		module.exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = undefined;
+		// @ts-ignore
+		module.exports.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = undefined;
+		// @ts-ignore
+		module.exports.__SERVER_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = undefined;
+		// Here we actually pull in the React library and add everything
+		// it exports to our own `module.exports`.
+		// If React suddenly were to add one of the above "polyfilled" exports,
+		// the React version would overwrite our version, so this should be
+		// future-proof.
+		Object.assign(module.exports, requireReact()); 
+	} (rehackt));
+	return rehackt.exports;
+}
+
+var rehacktExports = requireRehackt();
 const index = /*@__PURE__*/getDefaultExportFromCjs(rehacktExports);
 
 const React = /*#__PURE__*/_mergeNamespaces({
