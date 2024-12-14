@@ -27,9 +27,10 @@ require('dotenv').config();
 var app = express();
 app.use(bodyParser.json()); // MongoDB Connection
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+mongoose.connect(process.env.MONGODB_URI).then(function () {
+  return console.log("MongoDB connected");
+})["catch"](function (err) {
+  return console.error("MongoDB connection error:", err);
 });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:')); // Checklist Schema
@@ -110,7 +111,7 @@ server.start().then(function () {
   app.listen({
     port: 4004
   }, function () {
-    return console.log("Checklist service ready at http://localhost:4004".concat(server.graphqlPath));
+    return console.log("Checklist service ready at http://localhost:4002".concat(server.graphqlPath));
   });
 });
 //# sourceMappingURL=checklist-microservice.dev.js.map

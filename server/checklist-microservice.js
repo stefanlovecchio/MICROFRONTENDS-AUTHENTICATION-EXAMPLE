@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.error("MongoDB connection error:", err));
-    const db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // Checklist Schema
@@ -60,6 +60,6 @@ const server = new ApolloServer({ typeDefs, resolvers });
 server.start().then(() => {
     server.applyMiddleware({ app });
     app.listen({ port: 4004 }, () =>
-        console.log(`Checklist service ready at http://localhost:4004${server.graphqlPath}`)
+        console.log(`Checklist service ready at http://localhost:4002${server.graphqlPath}`)
     );
 });

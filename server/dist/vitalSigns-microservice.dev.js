@@ -37,18 +37,20 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     model = mongoose.model; // MongoDB connection setup
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+mongoose.connect(process.env.MONGODB_URI).then(function () {
+  return console.log("MongoDB connected");
+})["catch"](function (err) {
+  return console.error("MongoDB connection error:", err);
 });
 var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('error', console.error.bind(console, 'MongoDB connection error:')); //user model
 
 var User = model('User', userSchema); // Initialize express and configure middleware
 
 var app = express();
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'https://studio.apollographql.com'],
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'https://studio.apollographql.com'],
   credentials: true
 }));
 app.use(cookieParser()); // Vital signs schema definition
@@ -296,10 +298,11 @@ var server = new ApolloServer({
   context: function context(_ref4) {
     var req = _ref4.req;
     var token = req.cookies['token'];
+    console.log("token in vital signs:", token);
 
     if (token) {
       try {
-        var user = jwt.verify(token, 'your_secret_key'); // Replace 'your_secret_key' with your actual secret key
+        var user = jwt.verify(token, process.env.JWT_SECRET); // Replace 'your_secret_key' with your actual secret key
 
         return {
           user: user
@@ -319,7 +322,7 @@ server.start().then(function () {
   app.listen({
     port: 4002
   }, function () {
-    return console.log("\uD83D\uDE80 Server ready at http://localhost:4002".concat(server.graphqlPath));
+    return console.log("\uD83D\uDE80 Vital Signs Server ready at http://localhost:4005".concat(server.graphqlPath));
   });
 });
 //# sourceMappingURL=vitalSigns-microservice.dev.js.map

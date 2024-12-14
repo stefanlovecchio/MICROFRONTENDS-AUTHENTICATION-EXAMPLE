@@ -15,6 +15,7 @@ const { Schema, model } = mongoose;
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.error("MongoDB connection error:", err));
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -181,5 +182,5 @@ const server = new ApolloServer({
 server.start().then(() => {
     server.applyMiddleware({ app, cors: false });
     app.listen({ port: 4002 }, () =>
-        console.log(`🚀 Vital Signs Server ready at http://localhost:4002${server.graphqlPath}`));
+        console.log(`🚀 Vital Signs Server ready at http://localhost:4005${server.graphqlPath}`));
 });
